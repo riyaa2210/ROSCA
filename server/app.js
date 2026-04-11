@@ -12,18 +12,31 @@ app.use(helmet({
   contentSecurityPolicy: false, // allow Razorpay scripts in production
 }));
 
-const allowedOrigins = process.env.CLIENT_URL
-  ? [process.env.CLIENT_URL]
-  : ["http://localhost:3000"];
+// Build allowed origins list from env
+// CLIENT_URL can be a comma-separated list:
+//   e.g. "https://bhishi.vercel.app,https://www.bhishi.vercel.app"
+const rawOrigins = process.env.CLIENT_URL || "";
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:5173",
+  ...rawOrigins.split(",").map((o) => o.trim()).filter(Boolean),
+];
 
 app.use(cors({
   origin: (origin, cb) => {
-    // allow requests with no origin (mobile apps, curl, Render health checks)
-    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
-    cb(new Error("Not allowed by CORS"));
+    // Allow requests with no origin (Render health checks, curl, Postman)
+    if (!origin) return cb(null, true);
+    if (allowedOrigins.includes(origin)) return cb(null, true);
+    console.warn(`[CORS] Blocked origin: ${origin}`);
+    cb(new Error(`CORS: origin ${origin} not allowed`));
   },
   credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 }));
+
+// ── Preflight (OPTIONS) — must be before rate limiter ────────────────────────
+app.options("*", cors());
 
 // ── Rate limiting ─────────────────────────────────────────────────────────────
 const limiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 });
@@ -48,12 +61,25 @@ app.get("/api/health", (req, res) => res.json({ status: "ok" }));
 // ── Serve React build in production ──────────────────────────────────────────
 if (process.env.NODE_ENV === "production") {
   const publicPath = path.join(__dirname, "public");
-  app.use(express.static(publicPath));
+  const fs = require("fs");
 
-  // All non-API routes → React app (client-side routing)
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(publicPath, "index.html"));
-  });
+  if (fs.existsSync(publicPath)) {
+    app.use(express.static(publicPath));
+
+    // All non-API routes → React app (client-side routing)
+    app.get("*", (req, res) => {
+      const indexPath = path.join(publicPath, "index.html");
+      if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+      } else {
+        res.status(503).send("Frontend build not found. Run: npm run build");
+      }
+    });
+  } else {
+    app.get("*", (req, res) => {
+      res.status(503).send("Frontend build not found. Run: npm run build");
+    });
+  }
 }
 
 // ── Error handling ────────────────────────────────────────────────────────────

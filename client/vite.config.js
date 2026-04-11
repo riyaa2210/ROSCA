@@ -3,8 +3,8 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-  // Build output goes into server/public so Express can serve it
   build: {
+    // Output directly into server/public — Express serves this in production
     outDir: "../server/public",
     emptyOutDir: true,
   },

@@ -1,19 +1,23 @@
 import axios from "axios";
 
-// In production the React app is served by the same Express server,
-// so relative "/api" works. In dev, Vite proxies "/api" to localhost:5000.
+/**
+ * Since frontend and backend are on the SAME Render service (same origin),
+ * relative "/api" always works — no VITE_API_URL needed.
+ *
+ * Dev: Vite proxy forwards /api → localhost:5000
+ * Prod: Express serves React AND handles /api/* on the same port
+ */
 const api = axios.create({
   baseURL: "/api",
+  withCredentials: true,
 });
 
-// Attach JWT token to every request
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 
-// Handle 401 globally — redirect to login
 api.interceptors.response.use(
   (res) => res,
   (err) => {

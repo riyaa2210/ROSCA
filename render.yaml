@@ -2,17 +2,16 @@ services:
   - type: web
     name: bhishi-app
     runtime: node
-    rootDir: .
-    # 1. Install server deps  2. Build React into server/public  3. Start
-    buildCommand: "npm install --prefix server && npm install --prefix client && npm run build --prefix client"
-    startCommand: "node server/server.js"
+    rootDir: server
+    buildCommand: "npm install && cd ../client && npm install && npm run build"
+    startCommand: "node server.js"
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 10000
       - key: MONGO_URI
-        sync: false          # set manually in Render dashboard
+        sync: false
       - key: JWT_SECRET
         sync: false
       - key: JWT_EXPIRES_IN
@@ -31,5 +30,3 @@ services:
         sync: false
       - key: EMAIL_FROM
         sync: false
-      - key: CLIENT_URL
-        sync: false          # set to your Render app URL e.g. https://bhishi-app.onrender.com
