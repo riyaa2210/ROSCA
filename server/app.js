@@ -3,18 +3,14 @@ const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const path = require("path");
-const { errorHandler, notFound } = require("./middleware/errorMiddleware");
+const fs = require("fs");
+const { errorHandler } = require("./middleware/errorMiddleware");
 
 const app = express();
 
 // ── Security ──────────────────────────────────────────────────────────────────
-app.use(helmet({
-  contentSecurityPolicy: false, // allow Razorpay scripts in production
-}));
+app.use(helmet({ contentSecurityPolicy: false }));
 
-// Build allowed origins list from env
-// CLIENT_URL can be a comma-separated list:
-//   e.g. "https://bhishi.vercel.app,https://www.bhishi.vercel.app"
 const rawOrigins = process.env.CLIENT_URL || "";
 const allowedOrigins = [
   "http://localhost:3000",
@@ -24,7 +20,6 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: (origin, cb) => {
-    // Allow requests with no origin (Render health checks, curl, Postman)
     if (!origin) return cb(null, true);
     if (allowedOrigins.includes(origin)) return cb(null, true);
     console.warn(`[CORS] Blocked origin: ${origin}`);
@@ -35,7 +30,7 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
-// ── Preflight (OPTIONS) — must be before rate limiter ────────────────────────
+// Handle preflight before rate limiter
 app.options("*", cors());
 
 // ── Rate limiting ─────────────────────────────────────────────────────────────
@@ -46,8 +41,12 @@ app.use("/api/", limiter);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ── Serve uploaded files ──────────────────────────────────────────────────────
+// ── Static: uploaded files ────────────────────────────────────────────────────
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+// ── Static: React build (MUST be before API routes catch-all) ────────────────
+const publicPath = path.join(__dirname, "public");
+app.use(express.static(publicPath));
 
 // ── API Routes ────────────────────────────────────────────────────────────────
 app.use("/api/auth",          require("./routes/authRoutes"));
@@ -58,32 +57,21 @@ app.use("/api/notifications", require("./routes/notificationRoutes"));
 
 app.get("/api/health", (req, res) => res.json({ status: "ok" }));
 
-// ── Serve React build in production ──────────────────────────────────────────
-if (process.env.NODE_ENV === "production") {
-  const publicPath = path.join(__dirname, "public");
-  const fs = require("fs");
-
-  if (fs.existsSync(publicPath)) {
-    app.use(express.static(publicPath));
-
-    // All non-API routes → React app (client-side routing)
-    app.get("*", (req, res) => {
-      const indexPath = path.join(publicPath, "index.html");
-      if (fs.existsSync(indexPath)) {
-        res.sendFile(indexPath);
-      } else {
-        res.status(503).send("Frontend build not found. Run: npm run build");
-      }
-    });
+// ── React Router catch-all (MUST be after API routes) ────────────────────────
+// Serves index.html for all non-API routes so React Router works
+app.get("*", (req, res) => {
+  const indexPath = path.join(publicPath, "index.html");
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
   } else {
-    app.get("*", (req, res) => {
-      res.status(503).send("Frontend build not found. Run: npm run build");
+    res.status(503).json({
+      error: "Frontend not built",
+      hint: "Run: cd ../client && npm install && npm run build",
     });
   }
-}
+});
 
 // ── Error handling ────────────────────────────────────────────────────────────
-app.use(notFound);
 app.use(errorHandler);
 
 module.exports = app;
