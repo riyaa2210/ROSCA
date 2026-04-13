@@ -43,6 +43,9 @@ export default function Navbar() {
               <Link to="/groups" className="text-gray-600 dark:text-gray-300 hover:text-primary-600 font-medium">
                 {t("groups")}
               </Link>
+              <Link to="/transactions" className="text-gray-600 dark:text-gray-300 hover:text-primary-600 font-medium">
+                Transactions
+              </Link>
             </div>
           )}
 
@@ -89,6 +92,7 @@ export default function Navbar() {
         <div className="md:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-4 py-3 space-y-2">
           <Link to="/dashboard" className="block py-2 text-gray-700 dark:text-gray-300" onClick={() => setMenuOpen(false)}>{t("dashboard")}</Link>
           <Link to="/groups" className="block py-2 text-gray-700 dark:text-gray-300" onClick={() => setMenuOpen(false)}>{t("groups")}</Link>
+          <Link to="/transactions" className="block py-2 text-gray-700 dark:text-gray-300" onClick={() => setMenuOpen(false)}>Transactions</Link>
           <Link to="/profile" className="block py-2 text-gray-700 dark:text-gray-300" onClick={() => setMenuOpen(false)}>{t("profile")}</Link>
           <button onClick={handleLogout} className="block py-2 text-red-500 w-full text-left">{t("logout")}</button>
         </div>

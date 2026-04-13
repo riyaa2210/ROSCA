@@ -37,10 +37,30 @@ exports.uploadProfilePic = async (req, res, next) => {
 
 exports.getTransactionHistory = async (req, res, next) => {
   try {
-    const transactions = await Transaction.find({ user: req.user._id })
-      .populate("group", "name monthlyAmount")
-      .sort({ createdAt: -1 });
-    res.json(transactions);
+    const { parseQuery, buildSort, buildDateFilter, paginate } = require("../utils/queryBuilder");
+    const { status, type, dateFrom, dateTo, sortBy, order, page, limit } = parseQuery(req.query);
+
+    const filter = { user: req.user._id };
+
+    if (status) filter.status = status;
+    if (type)   filter.type = type;
+
+    const dateFilter = buildDateFilter("createdAt", dateFrom, dateTo);
+    Object.assign(filter, dateFilter);
+
+    const sort = buildSort(sortBy, order);
+    const skip = (page - 1) * limit;
+
+    const [transactions, total] = await Promise.all([
+      Transaction.find(filter)
+        .populate("group", "name monthlyAmount")
+        .sort(sort)
+        .skip(skip)
+        .limit(limit),
+      Transaction.countDocuments(filter),
+    ]);
+
+    res.json({ transactions, ...paginate(total, page, limit) });
   } catch (err) {
     next(err);
   }
@@ -72,11 +92,30 @@ exports.getDashboardStats = async (req, res, next) => {
   }
 };
 
-// Admin only
+// Admin only — search + filter users
 exports.getAllUsers = async (req, res, next) => {
   try {
-    const users = await User.find().select("-password").sort({ createdAt: -1 });
-    res.json(users);
+    const { parseQuery, buildSort, paginate } = require("../utils/queryBuilder");
+    const { search, sortBy, order, page, limit } = parseQuery(req.query);
+
+    const filter = {};
+    if (search) {
+      filter.$or = [
+        { name:  { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
+        { phone: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    const sort = buildSort(sortBy, order);
+    const skip = (page - 1) * limit;
+
+    const [users, total] = await Promise.all([
+      User.find(filter).select("-password").sort(sort).skip(skip).limit(limit),
+      User.countDocuments(filter),
+    ]);
+
+    res.json({ users, ...paginate(total, page, limit) });
   } catch (err) {
     next(err);
   }

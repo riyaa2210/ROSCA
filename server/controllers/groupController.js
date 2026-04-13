@@ -31,13 +31,36 @@ exports.createGroup = async (req, res, next) => {
   }
 };
 
-// Get all groups for current user
+// Get all groups for current user — with search, filter, sort, pagination
 exports.getMyGroups = async (req, res, next) => {
   try {
-    const groups = await Group.find({ "members.user": req.user._id })
-      .populate("admin", "name email profilePic")
-      .populate("members.user", "name email profilePic");
-    res.json(groups);
+    const { parseQuery, buildSort, paginate } = require("../utils/queryBuilder");
+    const { search, status, sortBy, order, page, limit } = parseQuery(req.query);
+
+    const filter = { "members.user": req.user._id };
+
+    if (search) {
+      filter.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } },
+      ];
+    }
+    if (status) filter.status = status;
+
+    const sort = buildSort(sortBy === "amount" ? "monthlyAmount" : sortBy, order);
+    const skip = (page - 1) * limit;
+
+    const [groups, total] = await Promise.all([
+      Group.find(filter)
+        .populate("admin", "name email profilePic")
+        .populate("members.user", "name email profilePic")
+        .sort(sort)
+        .skip(skip)
+        .limit(limit),
+      Group.countDocuments(filter),
+    ]);
+
+    res.json({ groups, ...paginate(total, page, limit) });
   } catch (err) {
     next(err);
   }
@@ -307,13 +330,34 @@ exports.getGroupPaymentStatus = async (req, res, next) => {
   }
 };
 
-// Admin: get all groups
+// Admin: get all groups — with search, filter, sort, pagination
 exports.getAllGroups = async (req, res, next) => {
   try {
-    const groups = await Group.find()
-      .populate("admin", "name email")
-      .sort({ createdAt: -1 });
-    res.json(groups);
+    const { parseQuery, buildSort, paginate } = require("../utils/queryBuilder");
+    const { search, status, sortBy, order, page, limit } = parseQuery(req.query);
+
+    const filter = {};
+    if (search) {
+      filter.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } },
+      ];
+    }
+    if (status) filter.status = status;
+
+    const sort = buildSort(sortBy === "amount" ? "monthlyAmount" : sortBy, order);
+    const skip = (page - 1) * limit;
+
+    const [groups, total] = await Promise.all([
+      Group.find(filter)
+        .populate("admin", "name email")
+        .sort(sort)
+        .skip(skip)
+        .limit(limit),
+      Group.countDocuments(filter),
+    ]);
+
+    res.json({ groups, ...paginate(total, page, limit) });
   } catch (err) {
     next(err);
   }
