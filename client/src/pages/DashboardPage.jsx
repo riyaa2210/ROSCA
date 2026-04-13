@@ -7,6 +7,7 @@ import StatCard from "../components/StatCard";
 import GroupCard from "../components/GroupCard";
 import Spinner from "../components/Spinner";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import AIInsights from "../components/AIInsights";
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -84,6 +85,8 @@ export default function DashboardPage() {
 
         {/* Right panel */}
         <div className="space-y-6">
+          {/* AI Insights */}
+          <AIInsights />
           {/* Chart */}
           {chartData.length > 0 && (
             <div className="card">

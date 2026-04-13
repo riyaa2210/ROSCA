@@ -32,6 +32,8 @@ function AdminRoute({ children }) {
   return children;
 }
 
+import AIChatbot from "./components/AIChatbot";
+
 function AppRoutes() {
   const { user } = useAuth();
   const { pathname } = useLocation();
@@ -58,6 +60,8 @@ function AppRoutes() {
           <Route path="/admin" element={<AdminRoute><AdminPage /></AdminRoute>} />
           <Route path="*" element={<div className="flex flex-col items-center justify-center min-h-screen"><span className="text-6xl">404</span><p className="text-gray-500 mt-4">Page not found</p></div>} />
         </Routes>
+        {/* AI Chatbot — visible on all authenticated pages */}
+        {user && <AIChatbot />}
       </main>
     </>
   );

@@ -56,6 +56,7 @@ app.use("/api/users",         require("./routes/userRoutes"));
 app.use("/api/groups",        require("./routes/groupRoutes"));
 app.use("/api/payments",      require("./routes/paymentRoutes"));
 app.use("/api/notifications", require("./routes/notificationRoutes"));
+app.use("/api/ai",            require("./routes/aiRoutes"));
 
 // ── React Router catch-all ────────────────────────────────────────────────────
 app.get("*", (req, res) => {
