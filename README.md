@@ -1,276 +1,183 @@
-# 💰 Bhishi App (Money Pooling System)
+<!-- 🌈 Animated Header -->
 
-🚀 A full-stack web application that digitizes the traditional **Bhishi / Money Pooling system**, enabling users to create savings groups, contribute money periodically, and receive payouts in a secure, transparent, and automated way.
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:6C63FF,100:00C9A7&height=200&section=header&text=SaveSangam&fontSize=40&fontColor=ffffff&animation=fadeIn" />
+</p>
+
+<p align="center">
+  💰 Smart Bhishi (ROSCA) Platform — Built for Real-World FinTech
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/MERN-FullStack-6C63FF?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/FinTech-Secure-00C9A7?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/RealTime-Socket.io-orange?style=for-the-badge"/>
+</p>
 
 ---
 
-## 📌 Overview
+<!-- 🎥 Demo Preview GIF -->
 
-The Bhishi system (also known as ROSCA - Rotating Savings and Credit Association) is widely used for group savings. This application brings that concept online with:
+## 🎥 Live Demo
 
-* Secure authentication 🔐
-* Digital payments 💳
-* Transparent tracking 📊
-* Automated workflows ⚡
+<p align="center">
+  <a href="https://your-demo-link.com">
+    <img src="./screenshots/demo.gif" width="800" alt="Demo Preview"/>
+  </a>
+</p>
+
+👉 **Click above to experience the live app**
 
 ---
 
-## ✨ Features
+## ✨ Why This Project Stands Out
 
-* 🔐 **Authentication**
+🚀 Real-time multi-user fintech system
+💳 Secure payment workflow with verification
+⚡ Live updates using WebSockets
+📊 Insightful dashboards with analytics
+🔐 Production-grade authentication & security
 
-  * JWT-based Login & Registration
-  * Password hashing with bcrypt
+---
 
-* 👥 **Group Management**
+## 📸 UI Preview (Interactive Feel)
 
-  * Create & manage Bhishi groups
-  * Invite members
-  * Join/leave groups
+<p align="center">
+  <img src="./screenshots/dashboard.png" width="45%" />
+  <img src="./screenshots/group.png" width="45%" />
+</p>
 
-* 💰 **Contribution System**
+<p align="center">
+  <img src="./screenshots/payment.png" width="45%" />
+  <img src="./screenshots/landing.png" width="45%" />
+</p>
 
-  * Monthly fixed contributions
-  * Track paid & pending members
+---
 
-* 🎯 **Payout System**
+## 🧠 System Architecture
 
-  * Automated payout scheduling
-  * Random payout order generation
+```mermaid
+graph TD
+A[Frontend - React] --> B[Backend - Node.js]
+B --> C[MongoDB]
+B --> D[Razorpay API]
+B --> E[Socket.io]
+E --> A
+```
 
-* 💳 **Payments**
+---
 
-  * Razorpay integration
-  * Secure online transactions
+## 🔥 Core Features
 
-* 🔔 **Notifications**
+### 🔐 Authentication
 
-  * Payment reminders
-  * Payout alerts (Email support)
+* JWT-based login system
+* Secure password hashing (bcrypt)
+* Password reset via email
+* Role-based access control
 
-* 📊 **Dashboard**
+---
 
-  * Total savings overview
-  * Active groups
-  * Pending payments
+### 👥 Bhishi Group Engine
 
-* 🔐 **Security**
+* Create & manage savings groups
+* Invite via link/email
+* Lifecycle: `Pending → Active → Completed`
+* Smart pool calculation
 
-  * Protected API routes
-  * Input validation
-  * Rate limiting
+---
+
+### 💳 Payments
+
+* Razorpay integration
+* Secure order creation
+* Signature verification
+* Duplicate payment prevention
+
+---
+
+### 🏆 Payout System
+
+* Random payout assignment
+* Monthly payout tracking
+* Auto-completion logic
+
+---
+
+### ⚡ Real-Time Sync
+
+* Instant payment updates
+* Socket.io rooms per group
+* Live UI refresh without reload
+
+---
+
+## 📊 Dashboard Experience
+
+✨ Animated stats
+📈 Interactive charts
+📌 Real-time updates
+📉 Payment tracking
+
+---
+
+## 🎨 UI Highlights
+
+* Glassmorphism + gradient design
+* Smooth animations (Framer Motion)
+* Dark mode support
+* Mobile-first responsive
+* English + Marathi support
 
 ---
 
 ## 🛠️ Tech Stack
 
-### Frontend
-
-* React.js
-* Tailwind CSS
-* Context API / Redux Toolkit
-
-### Backend
-
-* Node.js
-* Express.js
-
-### Database
-
-* MongoDB (Mongoose ODM)
-
-### Authentication
-
-* JWT (JSON Web Token)
-* bcrypt
-
-### Payments
-
-* Razorpay
-
-### Cloud (Optional)
-
-* AWS S3 (file storage)
-* AWS SES (email notifications)
-* AWS EC2 (deployment)
+| Frontend      | Backend            | Database   | Integrations |
+| ------------- | ------------------ | ---------- | ------------ |
+| React         | Node.js            | MongoDB    | Razorpay     |
+| Tailwind      | Express            | PostgreSQL | Socket.io    |
+| Framer Motion | FastAPI (optional) |            | Nodemailer   |
 
 ---
 
-## 📁 Project Structure
+## ⚙️ Setup
 
-```
-bhishi-app/
-│
-├── client/                 # Frontend (React)
-│
-├── server/                 # Backend (Node.js)
-│   ├── config/             # DB, AWS configs
-│   ├── models/             # Mongoose schemas
-│   ├── controllers/        # Business logic
-│   ├── routes/             # API routes
-│   ├── middleware/         # Auth & error handling
-│   ├── utils/              # Helper functions
-│   ├── app.js
-│   ├── server.js
-│   └── .env
-│
-└── README.md
-```
+```bash
+git clone https://github.com/riyaa2210/ROSCA
+cd ROSCA
 
----
-
-## ⚙️ Installation & Setup
-
-### 1️⃣ Clone the Repository
-
-```
-git clone https://github.com/your-username/bhishi-app.git
-cd bhishi-app
-```
-
----
-
-### 2️⃣ Backend Setup
-
-```
-cd server
+# install
 npm install
-```
 
-Create `.env` file:
-
-```
-PORT=5000
-MONGO_URI=your_mongodb_uri
-JWT_SECRET=your_secret_key
-RAZORPAY_KEY=your_key
-RAZORPAY_SECRET=your_secret
-```
-
-Run backend:
-
-```
+# run
 npm run dev
 ```
 
 ---
 
-### 3️⃣ Frontend Setup
+## 🚀 Future Enhancements
 
-```
-cd client
-npm install
-npm start
-```
-
----
-
-## 🔗 API Endpoints
-
-### Auth
-
-```
-POST /api/auth/register
-POST /api/auth/login
-```
-
-### Groups
-
-```
-POST /api/groups        # Create group
-GET /api/groups         # Get user groups
-```
-
-### Payments
-
-```
-POST /api/payment/order
-```
-
----
-
-## 🧪 Testing
-
-Use tools like:
-
-* Postman
-* Thunder Client (VS Code)
-
----
-
-## 🚀 Deployment
-
-### Backend
-
-* Deploy on AWS EC2
-
-### Frontend
-
-* Deploy on AWS S3 + CloudFront
-
-### Database
-
-* MongoDB Atlas
-
----
-
-## 🌟 Future Enhancements
-
-* 🔄 Real-time updates using Socket.io
-* 🌐 Multi-language support (English + Marathi)
-* 📱 Mobile responsive UI
-* 🧠 Smart payout (auction system)
+* 📱 Mobile app version
+* 🤖 AI-based savings recommendations
 * 📊 Advanced analytics dashboard
 
 ---
 
-## 💡 Problem Statement
+## 📬 Connect With Me
 
-Traditional Bhishi systems rely on manual tracking, cash handling, and trust, which can lead to:
-
-* Errors ❌
-* Lack of transparency ❌
-* Risk of fraud ❌
-
----
-
-## ✅ Solution
-
-This application provides a secure and automated platform for managing group savings digitally, ensuring transparency, ease of use, and trust among users.
+<p align="center">
+  <a href="https://github.com/riyaa2210">GitHub</a> •
+  <a href="https://www.linkedin.com/in/riya-ransing-86607a318">LinkedIn</a> •
+  <a href="mailto:ransingriya@gmail.com">Email</a>
+</p>
 
 ---
 
-## 🤝 Contributing
+<!-- 🔥 Footer -->
 
-Contributions are welcome!
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:00C9A7,100:6C63FF&height=120&section=footer"/>
+</p>
 
-1. Fork the repo
-2. Create a new branch
-3. Commit your changes
-4. Push and create PR
-
----
-
-## 📜 License
-
-This project is licensed under the MIT License.
-
----
-
-## 👩‍💻 Author
-
-**Riya Ransing**
-
----
-
-## ⭐ Support
-
-If you like this project:
-
-👉 Star the repo
-👉 Share with others
-👉 Contribute
-
----
-
-🚀 *Building real-world fintech solutions for the future!*
+⭐ *If you found this project interesting, consider giving it a star!*
