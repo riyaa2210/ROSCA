@@ -1,11 +1,13 @@
 <!-- 🌈 Animated Header -->
 
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:6C63FF,100:00C9A7&height=200&section=header&text=SaveSangam&fontSize=40&fontColor=ffffff&animation=fadeIn" />
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:6C63FF,100:00C9A7&height=200&section=header&text=SaveSangam&fontSize=42&fontColor=ffffff&animation=fadeIn" />
 </p>
 
+<h3 align="center">💰 Smart Bhishi (ROSCA) Platform</h3>
+
 <p align="center">
-  💰 Smart Bhishi (ROSCA) Platform — Built for Real-World FinTech
+  🚀 Real-time FinTech system for group savings, payments & automation
 </p>
 
 <p align="center">
@@ -16,29 +18,38 @@
 
 ---
 
-<!-- 🎥 Demo Preview GIF -->
-
 ## 🎥 Live Demo
 
 <p align="center">
   <a href="https://your-demo-link.com">
-    <img src="./screenshots/demo.gif" width="800" alt="Demo Preview"/>
+    <img src="./screenshots/demo.gif" width="850" alt="Demo Preview"/>
   </a>
 </p>
 
-👉 **Click above to experience the live app**
+<p align="center">
+👉 Click above to explore the live application
+</p>
 
 ---
+
 ## ✨ Why This Project Stands Out
 
-- 🚀 Real-time multi-user fintech system  
-- 💳 Secure payment workflow with verification  
-- ⚡ Live updates using WebSockets  
-- 📊 Insightful dashboards with analytics  
-- 🔐 Production-grade authentication & security  
+<p align="center">
+
+🚀 <b>Real-time multi-user fintech system</b>    |   
+💳 <b>Secure payment workflow</b>    |   
+⚡ <b>Live WebSocket updates</b>
+
+<br/><br/>
+
+📊 <b>Insightful dashboards</b>    |   
+🔐 <b>Production-grade security</b>
+
+</p>
+
 ---
 
-## 📸 UI Preview (Interactive Feel)
+## 📸 UI Preview
 
 <p align="center">
   <img src="./screenshots/dashboard.png" width="45%" />
@@ -56,7 +67,7 @@
 
 ```mermaid
 graph TD
-A[Frontend - React] --> B[Backend - Node.js]
+A[React Frontend] --> B[Node.js Backend]
 B --> C[MongoDB]
 B --> D[Razorpay API]
 B --> E[Socket.io]
@@ -69,62 +80,71 @@ E --> A
 
 ### 🔐 Authentication
 
-* JWT-based login system
-* Secure password hashing (bcrypt)
-* Password reset via email
+* JWT-based login & session management
+* bcrypt password hashing (12 rounds)
+* Secure password reset via email
 * Role-based access control
 
 ---
 
-### 👥 Bhishi Group Engine
+### 👥 Bhishi Group Management
 
 * Create & manage savings groups
-* Invite via link/email
+* Invite via link or email
+* Join / leave groups
 * Lifecycle: `Pending → Active → Completed`
 * Smart pool calculation
 
 ---
 
-### 💳 Payments
+### 💳 Payment System
 
-* Razorpay integration
-* Secure order creation
-* Signature verification
-* Duplicate payment prevention
+* Razorpay integration (UPI / Cards / Net Banking)
+* Secure backend order creation
+* HMAC-SHA256 verification
+* Prevent duplicate payments
 
 ---
 
-### 🏆 Payout System
+### 🏆 Payout Engine
 
 * Random payout assignment
 * Monthly payout tracking
-* Auto-completion logic
+* Auto-complete after all payouts
 
 ---
 
-### ⚡ Real-Time Sync
+### ⚡ Real-Time Features
 
-* Instant payment updates
-* Socket.io rooms per group
-* Live UI refresh without reload
-
----
-
-## 📊 Dashboard Experience
-
-✨ Animated stats
-📈 Interactive charts
-📌 Real-time updates
-📉 Payment tracking
+* Live payment updates (Socket.io)
+* Group-based rooms
+* Instant UI sync
 
 ---
 
-## 🎨 UI Highlights
+### 🔔 Notifications
 
-* Glassmorphism + gradient design
+* In-app notification center
+* Email alerts (payments, invites, payouts)
+* Real-time updates
+
+---
+
+## 📊 Dashboard & Analytics
+
+✨ Animated stats cards
+📈 Interactive charts (Recharts)
+📌 Payment tracking
+📉 Group progress visualization
+
+---
+
+## 🎨 UI / UX Highlights
+
+* Modern fintech-inspired UI
 * Smooth animations (Framer Motion)
 * Dark mode support
-* Mobile-first responsive
+* Mobile-first responsive design
 * English + Marathi support
 
 ---
@@ -133,23 +153,34 @@ E --> A
 
 | Frontend      | Backend            | Database   | Integrations |
 | ------------- | ------------------ | ---------- | ------------ |
-| React         | Node.js            | MongoDB    | Razorpay     |
-| Tailwind      | Express            | PostgreSQL | Socket.io    |
+| React.js      | Node.js            | MongoDB    | Razorpay     |
+| Tailwind CSS  | Express.js         | PostgreSQL | Socket.io    |
 | Framer Motion | FastAPI (optional) |            | Nodemailer   |
 
 ---
 
-## ⚙️ Setup
+## ⚙️ Getting Started
 
 ```bash
+# Clone the repository
 git clone https://github.com/riyaa2210/ROSCA
-cd ROSCA
 
-# install
-npm install
+# Install dependencies
+cd backend && npm install
+cd ../frontend && npm install
 
-# run
+# Run project
 npm run dev
+```
+
+---
+
+## 📂 Project Structure
+
+```
+/frontend
+/backend
+/screenshots
 ```
 
 ---
@@ -172,10 +203,10 @@ npm run dev
 
 ---
 
-<!-- 🔥 Footer -->
+<!-- 🌊 Footer -->
 
 <p align="center">
   <img src="https://capsule-render.vercel.app/api?type=waving&color=0:00C9A7,100:6C63FF&height=120&section=footer"/>
 </p>
 
-⭐ *If you found this project interesting, consider giving it a star!*
+⭐ If you like this project, consider giving it a star!
