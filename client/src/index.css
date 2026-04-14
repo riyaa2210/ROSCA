@@ -1,24 +1,135 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ── Base ─────────────────────────────────────────────────────────────────── */
 @layer base {
+  * { @apply antialiased; }
   body {
-    @apply font-sans bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100;
+    @apply font-sans bg-slate-50 text-gray-900 dark:bg-[#0a0a14] dark:text-gray-100;
+    overflow-x: hidden;
+  }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { @apply bg-transparent; }
+  ::-webkit-scrollbar-thumb { @apply bg-brand-200 dark:bg-brand-700 rounded-full; }
+}
+
+/* ── Components ───────────────────────────────────────────────────────────── */
+@layer components {
+
+  /* Glass card */
+  .glass {
+    @apply bg-white/70 dark:bg-white/5 backdrop-blur-xl
+           border border-white/60 dark:border-white/10
+           rounded-3xl shadow-glass;
+  }
+
+  /* Solid card */
+  .card {
+    @apply bg-white dark:bg-gray-900/80 rounded-3xl
+           border border-gray-100 dark:border-gray-800
+           shadow-card p-6;
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-brand-600 via-purple-600 to-saffron-500
+           bg-clip-text text-transparent;
+  }
+
+  /* Primary button */
+  .btn-primary {
+    @apply relative inline-flex items-center justify-center gap-2
+           bg-gradient-to-r from-brand-600 to-purple-600
+           text-white font-semibold px-6 py-2.5 rounded-2xl
+           shadow-md shadow-brand-200 dark:shadow-brand-900/40
+           hover:shadow-glow hover:scale-[1.03]
+           active:scale-[0.98]
+           transition-all duration-200
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100;
+  }
+
+  /* Secondary button */
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2
+           bg-white dark:bg-gray-800
+           text-gray-700 dark:text-gray-300
+           font-medium px-5 py-2.5 rounded-2xl
+           border border-gray-200 dark:border-gray-700
+           hover:border-brand-300 hover:shadow-md
+           active:scale-[0.98]
+           transition-all duration-200;
+  }
+
+  /* Input field */
+  .input-field {
+    @apply w-full px-4 py-3 rounded-2xl
+           bg-gray-50 dark:bg-gray-800/60
+           border border-gray-200 dark:border-gray-700
+           text-gray-900 dark:text-white
+           placeholder-gray-400
+           focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-400
+           transition-all duration-200;
+  }
+
+  /* Status chip */
+  .chip-paid    { @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400; }
+  .chip-pending { @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400; }
+  .chip-failed  { @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400; }
+  .chip-active  { @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400; }
+
+  /* Animated gradient background */
+  .animated-bg {
+    background: linear-gradient(-45deg, #eef2ff, #f5f3ff, #ecfdf5, #fff7ed);
+    background-size: 400% 400%;
+    animation: gradientShift 12s ease infinite;
+  }
+  .dark .animated-bg {
+    background: linear-gradient(-45deg, #0a0a14, #0f0a1e, #0a1410, #140a0a);
+    background-size: 400% 400%;
+  }
+
+  /* Shimmer skeleton */
+  .skeleton {
+    @apply rounded-2xl;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+  .dark .skeleton {
+    background: linear-gradient(90deg, #1f2937 25%, #374151 50%, #1f2937 75%);
+    background-size: 200% 100%;
+  }
+
+  /* Progress ring */
+  .progress-ring { transform: rotate(-90deg); }
+  .progress-ring-circle { transition: stroke-dashoffset 1s ease-in-out; }
+
+  /* Sidebar item */
+  .sidebar-item {
+    @apply flex items-center gap-3 px-4 py-3 rounded-2xl
+           text-gray-600 dark:text-gray-400
+           hover:bg-brand-50 dark:hover:bg-brand-900/20
+           hover:text-brand-700 dark:hover:text-brand-400
+           transition-all duration-200 cursor-pointer font-medium text-sm;
+  }
+  .sidebar-item.active {
+    @apply bg-gradient-to-r from-brand-50 to-purple-50
+           dark:from-brand-900/30 dark:to-purple-900/20
+           text-brand-700 dark:text-brand-400
+           border border-brand-100 dark:border-brand-800/50;
   }
 }
 
-@layer components {
-  .btn-primary {
-    @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
-  }
-  .btn-secondary {
-    @apply bg-white hover:bg-gray-50 text-gray-700 font-medium py-2 px-4 rounded-lg border border-gray-300 transition-colors duration-200;
-  }
-  .input-field {
-    @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-600 dark:text-white;
-  }
-  .card {
-    @apply bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6;
-  }
+/* ── Utilities ────────────────────────────────────────────────────────────── */
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 }
+
+/* ── Page transition ──────────────────────────────────────────────────────── */
+.page-enter  { opacity: 0; transform: translateY(12px); }
+.page-active { opacity: 1; transform: translateY(0); transition: all 0.35s ease; }
