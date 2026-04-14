@@ -29,15 +29,13 @@
 👉 **Click above to experience the live app**
 
 ---
-
 ## ✨ Why This Project Stands Out
 
-🚀 Real-time multi-user fintech system
-💳 Secure payment workflow with verification
-⚡ Live updates using WebSockets
-📊 Insightful dashboards with analytics
-🔐 Production-grade authentication & security
-
+- 🚀 Real-time multi-user fintech system  
+- 💳 Secure payment workflow with verification  
+- ⚡ Live updates using WebSockets  
+- 📊 Insightful dashboards with analytics  
+- 🔐 Production-grade authentication & security  
 ---
 
 ## 📸 UI Preview (Interactive Feel)
