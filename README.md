@@ -38,10 +38,7 @@
 
 🚀 <b>Real-time multi-user fintech system</b>    |   
 💳 <b>Secure payment workflow</b>    |   
-⚡ <b>Live WebSocket updates</b>
-
-<br/><br/>
-
+⚡ <b>Live WebSocket updates</b>    |
 📊 <b>Insightful dashboards</b>    |   
 🔐 <b>Production-grade security</b>
 
