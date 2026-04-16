@@ -21,8 +21,7 @@
 ## 🎥 Live Demo
 
 <p align="center">
-  <a href="https://your-demo-link.com">
-    <img src="./screenshots/demo.gif" width="850" alt="Demo Preview"/>
+  <a href="[https://your-demo-link.com](https://rosca-w768.onrender.com)">
   </a>
 </p>
 
