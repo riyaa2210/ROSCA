@@ -8,12 +8,19 @@
 @layer base {
   * { @apply antialiased; }
   body {
-    @apply font-sans bg-slate-50 text-gray-900 dark:bg-[#0a0a14] dark:text-gray-100;
+    @apply font-sans bg-slate-50 text-gray-900 dark:text-gray-100;
+    background-color: #f8fafc;
     overflow-x: hidden;
   }
+  .dark body { background-color: #0a0a14; }
+
   ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { @apply bg-transparent; }
-  ::-webkit-scrollbar-thumb { @apply bg-brand-200 dark:bg-brand-700 rounded-full; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    @apply rounded-full;
+    background-color: #c7d2fe;
+  }
+  .dark ::-webkit-scrollbar-thumb { background-color: #4338ca; }
 }
 
 /* ── Components ───────────────────────────────────────────────────────────── */
@@ -21,35 +28,46 @@
 
   /* Glass card */
   .glass {
-    @apply bg-white/70 dark:bg-white/5 backdrop-blur-xl
-           border border-white/60 dark:border-white/10
-           rounded-3xl shadow-glass;
+    @apply backdrop-blur-xl rounded-3xl;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 8px 32px rgba(99, 102, 241, 0.12);
+  }
+  .dark .glass {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   /* Solid card */
   .card {
-    @apply bg-white dark:bg-gray-900/80 rounded-3xl
-           border border-gray-100 dark:border-gray-800
-           shadow-card p-6;
+    @apply bg-white rounded-3xl border border-gray-100 p-6;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.07);
+  }
+  .dark .card {
+    background: rgba(17, 24, 39, 0.8);
+    border-color: #1f2937;
   }
 
   /* Gradient text */
   .gradient-text {
-    @apply bg-gradient-to-r from-brand-600 via-purple-600 to-saffron-500
-           bg-clip-text text-transparent;
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(to right, #4f46e5, #9333ea, #f97316);
   }
 
   /* Primary button */
   .btn-primary {
     @apply relative inline-flex items-center justify-center gap-2
-           bg-gradient-to-r from-brand-600 to-purple-600
            text-white font-semibold px-6 py-2.5 rounded-2xl
-           shadow-md shadow-brand-200 dark:shadow-brand-900/40
-           hover:shadow-glow hover:scale-[1.03]
-           active:scale-[0.98]
            transition-all duration-200
-           disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100;
+           disabled:opacity-50 disabled:cursor-not-allowed;
+    background: linear-gradient(to right, #4f46e5, #9333ea);
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
   }
+  .btn-primary:hover:not(:disabled) {
+    transform: scale(1.03);
+    box-shadow: 0 0 24px rgba(99, 102, 241, 0.5);
+  }
+  .btn-primary:active:not(:disabled) { transform: scale(0.98); }
 
   /* Secondary button */
   .btn-secondary {
@@ -58,7 +76,7 @@
            text-gray-700 dark:text-gray-300
            font-medium px-5 py-2.5 rounded-2xl
            border border-gray-200 dark:border-gray-700
-           hover:border-blue-300 hover:shadow-md
+           hover:border-indigo-300 hover:shadow-md
            active:scale-[0.98]
            transition-all duration-200;
   }
@@ -66,19 +84,45 @@
   /* Input field */
   .input-field {
     @apply w-full px-4 py-3 rounded-2xl
-           bg-gray-50 dark:bg-gray-800/60
+           bg-gray-50 dark:bg-gray-800
            border border-gray-200 dark:border-gray-700
            text-gray-900 dark:text-white
            placeholder-gray-400
-           focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-400
+           focus:outline-none focus:border-indigo-400
            transition-all duration-200;
   }
+  .input-field:focus {
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  }
 
-  /* Status chip */
-  .chip-paid    { @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400; }
-  .chip-pending { @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400; }
-  .chip-failed  { @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400; }
-  .chip-active  { @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-brand-100 text-brand-700 dark:bg-brand-900/30 dark:text-brand-400; }
+  /* Status chips — plain CSS to avoid opacity modifier issues */
+  .chip-paid {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold;
+    background: #d1fae5;
+    color: #065f46;
+  }
+  .dark .chip-paid { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+
+  .chip-pending {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold;
+    background: #fef3c7;
+    color: #92400e;
+  }
+  .dark .chip-pending { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+
+  .chip-failed {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold;
+    background: #fee2e2;
+    color: #991b1b;
+  }
+  .dark .chip-failed { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+
+  .chip-active {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold;
+    background: #e0e7ff;
+    color: #3730a3;
+  }
+  .dark .chip-active { background: rgba(99, 102, 241, 0.15); color: #818cf8; }
 
   /* Animated gradient background */
   .animated-bg {
@@ -111,15 +155,25 @@
   .sidebar-item {
     @apply flex items-center gap-3 px-4 py-3 rounded-2xl
            text-gray-600 dark:text-gray-400
-           hover:bg-blue-50 dark:hover:bg-brand-900/20
-           hover:text-brand-700 dark:hover:text-brand-400
            transition-all duration-200 cursor-pointer font-medium text-sm;
   }
+  .sidebar-item:hover {
+    background: rgba(238, 242, 255, 0.8);
+    color: #4338ca;
+  }
+  .dark .sidebar-item:hover {
+    background: rgba(99, 102, 241, 0.1);
+    color: #818cf8;
+  }
   .sidebar-item.active {
-    @apply bg-gradient-to-r from-brand-50 to-purple-50
-           dark:from-brand-900/30 dark:to-purple-900/20
-           text-brand-700 dark:text-brand-400
-           border border-brand-100 dark:border-brand-800/50;
+    background: linear-gradient(to right, #eef2ff, #f5f3ff);
+    color: #4338ca;
+    border: 1px solid #c7d2fe;
+  }
+  .dark .sidebar-item.active {
+    background: linear-gradient(to right, rgba(99,102,241,0.15), rgba(147,51,234,0.1));
+    color: #818cf8;
+    border: 1px solid rgba(99, 102, 241, 0.2);
   }
 }
 
