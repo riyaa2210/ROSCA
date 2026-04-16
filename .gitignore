@@ -2,12 +2,12 @@
 node_modules/
 **/node_modules/
 
-# ── Build output ──────────────────────────────────────────────────────────────
-dist/
+# ── Build output (Render generates this during deploy) ────────────────────────
 server/public/
 client/dist/
+dist/
 
-# ── Environment files ─────────────────────────────────────────────────────────
+# ── Environment files (NEVER commit secrets) ──────────────────────────────────
 .env
 .env.local
 .env.production
@@ -18,7 +18,7 @@ server/.env
 client/.env.production
 client/.env.local
 
-# ── Uploads (ephemeral — use cloud storage in prod) ───────────────────────────
+# ── Uploads (use cloud storage in prod) ───────────────────────────────────────
 server/uploads/*
 !server/uploads/.gitkeep
 

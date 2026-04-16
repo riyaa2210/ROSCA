@@ -1,25 +1,17 @@
 const express = require("express");
-const cors = require("cors");
-const helmet = require("helmet");
+const cors    = require("cors");
+const helmet  = require("helmet");
 const rateLimit = require("express-rate-limit");
-const path = require("path");
-const fs = require("fs");
+const path    = require("path");
+const fs      = require("fs");
 const { errorHandler } = require("./middleware/errorMiddleware");
 
 const app = express();
-
 const publicPath = path.join(__dirname, "public");
-
-// ── Log startup info ──────────────────────────────────────────────────────────
-console.log("NODE_ENV:", process.env.NODE_ENV);
-console.log("publicPath:", publicPath);
-console.log("public exists:", fs.existsSync(publicPath));
-console.log("index.html exists:", fs.existsSync(path.join(publicPath, "index.html")));
 
 // ── Security ──────────────────────────────────────────────────────────────────
 app.use(helmet({ contentSecurityPolicy: false }));
 
-// Wide-open CORS — safe because frontend is same origin on Render
 app.use(cors({
   origin: true,
   credentials: true,
@@ -36,17 +28,16 @@ app.use("/api/", limiter);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ── Static files — serve FIRST before any routes ─────────────────────────────
+// ── Static files (uploads + React build) ─────────────────────────────────────
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(express.static(publicPath));
 
-// ── Debug endpoint ────────────────────────────────────────────────────────────
+// ── Health check ──────────────────────────────────────────────────────────────
 app.get("/api/health", (req, res) => {
   res.json({
     status: "ok",
-    publicExists: fs.existsSync(publicPath),
-    indexExists: fs.existsSync(path.join(publicPath, "index.html")),
-    publicContents: fs.existsSync(publicPath) ? fs.readdirSync(publicPath) : [],
+    env: process.env.NODE_ENV,
+    built: fs.existsSync(path.join(publicPath, "index.html")),
   });
 });
 
@@ -66,11 +57,10 @@ app.get("*", (req, res) => {
   if (fs.existsSync(indexPath)) {
     res.sendFile(indexPath);
   } else {
-    res.status(503).send(`
-      <h2>Frontend not built</h2>
-      <p>publicPath: ${publicPath}</p>
-      <p>exists: ${fs.existsSync(publicPath)}</p>
-    `);
+    res.status(503).json({
+      error: "Frontend not built",
+      fix: "Run: npm run build (from server directory)",
+    });
   }
 });
 

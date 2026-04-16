@@ -1,9 +1,9 @@
 services:
   - type: web
-    name: bhishi-app
+    name: savesangam
     runtime: node
     rootDir: server
-    buildCommand: "npm install"
+    buildCommand: "npm install && npm run build"
     startCommand: "node server.js"
     envVars:
       - key: NODE_ENV
@@ -29,4 +29,6 @@ services:
       - key: SMTP_PASS
         sync: false
       - key: EMAIL_FROM
+        sync: false
+      - key: OPENAI_API_KEY
         sync: false
