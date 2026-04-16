@@ -20,13 +20,12 @@
 
 ## 🎥 Live Demo
 
-<p align="center">
-  <a href="[https://your-demo-link.com](https://rosca-w768.onrender.com)">
-  </a>
-</p>
+ ## 🎥 Live Demo
 
 <p align="center">
-👉 Click above to explore the live application
+  <a href="https://rosca-w768.onrender.com" target="_blank">
+    👉 Click here to explore the live application
+  </a>
 </p>
 
 ---
@@ -48,13 +47,13 @@
 ## 📸 UI Preview
 
 <p align="center">
-  <img src="./screenshots/dashboard.png" width="45%" />
-  <img src="./screenshots/group.png" width="45%" />
+  <img src="./screenshots/1.png" width="45%" />
+  <img src="./screenshots/2.png" width="45%" />
 </p>
 
 <p align="center">
-  <img src="./screenshots/payment.png" width="45%" />
-  <img src="./screenshots/landing.png" width="45%" />
+  <img src="./screenshots/3.png" width="45%" />
+  <img src="./screenshots/4.png" width="45%" />
 </p>
 
 ---
