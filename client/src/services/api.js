@@ -1,14 +1,17 @@
 import axios from "axios";
 
 /**
- * Since frontend and backend are on the SAME Render service (same origin),
- * relative "/api" always works — no VITE_API_URL needed.
- *
- * Dev: Vite proxy forwards /api → localhost:5000
- * Prod: Express serves React AND handles /api/* on the same port
+ * API base URL:
+ *  - Dev:  empty VITE_API_URL → Vite proxy forwards /api → localhost:5000
+ *  - Prod (same service): VITE_API_URL not set → relative /api works
+ *  - Prod (separate static site): VITE_API_URL = https://your-backend.onrender.com
  */
+const BASE_URL = import.meta.env.VITE_API_URL
+  ? `${import.meta.env.VITE_API_URL}/api`
+  : "/api";
+
 const api = axios.create({
-  baseURL: "/api",
+  baseURL: BASE_URL,
   withCredentials: true,
 });
 

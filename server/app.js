@@ -1,9 +1,9 @@
-const express = require("express");
-const cors    = require("cors");
-const helmet  = require("helmet");
+const express   = require("express");
+const cors      = require("cors");
+const helmet    = require("helmet");
 const rateLimit = require("express-rate-limit");
-const path    = require("path");
-const fs      = require("fs");
+const path      = require("path");
+const fs        = require("fs");
 const { errorHandler } = require("./middleware/errorMiddleware");
 
 const app = express();
@@ -12,8 +12,24 @@ const publicPath = path.join(__dirname, "public");
 // ── Security ──────────────────────────────────────────────────────────────────
 app.use(helmet({ contentSecurityPolicy: false }));
 
+// CORS — allow same-origin requests AND the separate frontend URL if set
+const rawOrigins  = process.env.CLIENT_URL || "";
+const allowedList = [
+  "http://localhost:3000",
+  "http://localhost:5173",
+  ...rawOrigins.split(",").map((o) => o.trim()).filter(Boolean),
+];
+
 app.use(cors({
-  origin: true,
+  origin: (origin, cb) => {
+    // No origin = same-origin / Postman / health checks
+    if (!origin) return cb(null, true);
+    if (allowedList.includes(origin)) return cb(null, true);
+    // In production with no CLIENT_URL set, allow everything (same-service deploy)
+    if (!process.env.CLIENT_URL) return cb(null, true);
+    console.warn("[CORS] Blocked:", origin);
+    cb(new Error("CORS: not allowed"));
+  },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
@@ -28,7 +44,7 @@ app.use("/api/", limiter);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ── Static files (uploads + React build) ─────────────────────────────────────
+// ── Static files ──────────────────────────────────────────────────────────────
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 app.use(express.static(publicPath));
 
@@ -36,8 +52,8 @@ app.use(express.static(publicPath));
 app.get("/api/health", (req, res) => {
   res.json({
     status: "ok",
-    env: process.env.NODE_ENV,
-    built: fs.existsSync(path.join(publicPath, "index.html")),
+    env:    process.env.NODE_ENV,
+    built:  fs.existsSync(path.join(publicPath, "index.html")),
   });
 });
 
@@ -51,16 +67,13 @@ app.use("/api/ai",            require("./routes/aiRoutes"));
 app.use("/api/search",        require("./routes/searchRoutes"));
 app.use("/api/analytics",     require("./routes/analyticsRoutes"));
 
-// ── React Router catch-all ────────────────────────────────────────────────────
+// ── React Router catch-all (only when frontend is bundled here) ───────────────
 app.get("*", (req, res) => {
   const indexPath = path.join(publicPath, "index.html");
   if (fs.existsSync(indexPath)) {
     res.sendFile(indexPath);
   } else {
-    res.status(503).json({
-      error: "Frontend not built",
-      fix: "Run: npm run build (from server directory)",
-    });
+    res.status(404).json({ error: "Not found" });
   }
 });
 
