@@ -2,6 +2,7 @@ const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const { sendWelcomeEmail, sendPasswordResetEmail } = require("../services/emailService");
+const { createWallet } = require("../services/walletService");
 
 const generateToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN || "7d" });
@@ -14,6 +15,10 @@ exports.register = async (req, res, next) => {
     if (exists) return res.status(400).json({ message: "Email already registered" });
 
     const user = await User.create({ name, email, password, phone });
+
+    // Auto-create wallet for every new user
+    await createWallet(user._id);
+
     sendWelcomeEmail(user);
 
     res.status(201).json({ token: generateToken(user._id), user });

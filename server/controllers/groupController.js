@@ -4,6 +4,7 @@ const Transaction = require("../models/Transaction");
 const User = require("../models/user");
 const { sendGroupInviteEmail, sendPayoutAnnouncementEmail, sendPaymentReminderEmail } = require("../services/emailService");
 const { createNotification } = require("../services/notificationService");
+const { creditWallet, DuplicateOperationError } = require("../services/walletService");
 
 const generateInviteCode = () => crypto.randomBytes(6).toString("hex");
 
@@ -274,6 +275,21 @@ exports.processPayout = async (req, res, next) => {
     });
 
     sendPayoutAnnouncementEmail(recipient, group, payoutAmount, group.currentMonth - 1);
+
+    // ── Credit recipient's wallet ─────────────────────────────────────────────
+    try {
+      await creditWallet(recipient._id, payoutAmount, {
+        source:         "payout",
+        description:    `Payout from group "${group.name}" — Month ${group.currentMonth - 1}`,
+        referenceId:    group._id,
+        referenceModel: "Group",
+        idempotencyKey: `payout:${group._id}:${group.currentMonth - 1}`,
+      });
+    } catch (walletErr) {
+      if (!(walletErr instanceof DuplicateOperationError)) {
+        console.error("[Wallet] credit failed after payout:", walletErr.message);
+      }
+    }
 
     res.json({ message: "Payout processed", recipient, payoutAmount });
   } catch (err) {

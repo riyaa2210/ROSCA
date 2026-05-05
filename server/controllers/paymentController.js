@@ -3,6 +3,7 @@ const crypto = require("crypto");
 const Transaction = require("../models/Transaction");
 const Group = require("../models/Group");
 const { createNotification } = require("../services/notificationService");
+const { debitWallet, DuplicateOperationError } = require("../services/walletService");
 
 const razorpay = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
@@ -70,6 +71,26 @@ exports.verifyPayment = async (req, res, next) => {
       },
       { new: true, upsert: true }
     );
+
+    // ── Debit wallet (idempotent — safe to retry) ─────────────────────────────
+    try {
+      const group = await Group.findById(groupId).select("monthlyAmount name");
+      if (group) {
+        await debitWallet(req.user._id, group.monthlyAmount, {
+          source:         "contribution",
+          description:    `Contribution for ${group.name} — Month ${month}`,
+          referenceId:    tx._id,
+          referenceModel: "Transaction",
+          idempotencyKey: `contribution:${tx._id}`,
+        });
+      }
+    } catch (walletErr) {
+      // DuplicateOperationError = already debited, safe to ignore
+      if (!(walletErr instanceof DuplicateOperationError)) {
+        console.error("[Wallet] debit failed after payment verify:", walletErr.message);
+        // Don't fail the payment response — log and alert ops
+      }
+    }
 
     await createNotification({
       userId: req.user._id,

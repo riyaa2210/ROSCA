@@ -66,6 +66,7 @@ app.use("/api/notifications", require("./routes/notificationRoutes"));
 app.use("/api/ai",            require("./routes/aiRoutes"));
 app.use("/api/search",        require("./routes/searchRoutes"));
 app.use("/api/analytics",     require("./routes/analyticsRoutes"));
+app.use("/api/wallet",        require("./routes/walletRoutes"));
 
 // ── React Router catch-all (only when frontend is bundled here) ───────────────
 app.get("*", (req, res) => {
