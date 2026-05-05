@@ -1,7 +1,7 @@
 const express = require("express");
-const router = express.Router();
-const { protect, adminOnly } = require("../middleware/authMiddleware");
-const upload = require("../middleware/upload");
+const router  = express.Router();
+const { protect, adminOnly }    = require("../middleware/authMiddleware");
+const { uploadSingle }          = require("../middleware/upload");
 const {
   updateProfile,
   uploadProfilePic,
@@ -12,12 +12,15 @@ const {
 
 router.use(protect);
 
-router.put("/profile", updateProfile);
-router.post("/profile/picture", upload.single("profilePic"), uploadProfilePic);
-router.get("/transactions", getTransactionHistory);
-router.get("/dashboard", getDashboardStats);
+router.put("/profile",         updateProfile);
+router.post("/profile/picture",
+  uploadSingle("profilePic"),  // handles multer errors gracefully
+  uploadProfilePic
+);
+router.get("/transactions",    getTransactionHistory);
+router.get("/dashboard",       getDashboardStats);
 
 // Admin
-router.get("/all", adminOnly, getAllUsers);
+router.get("/all", adminOnly,  getAllUsers);
 
 module.exports = router;
