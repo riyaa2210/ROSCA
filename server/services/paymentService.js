@@ -235,6 +235,13 @@ async function processVerifiedPayment({ orderId, paymentId, signature, groupId, 
       });
     }
 
+    // ── Step 9: Trigger async risk score recompute ────────────────────────────
+    // Fire-and-forget — don't await, don't block the payment response
+    const { computeAndSaveRiskScore } = require("./riskScoringService");
+    computeAndSaveRiskScore(userId).catch((err) =>
+      console.error("[RiskScore] recompute failed after payment:", err.message)
+    );
+
     return finalTx;
 
   } catch (err) {

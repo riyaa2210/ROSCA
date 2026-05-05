@@ -18,10 +18,11 @@ router.use(protect, adminOnly);
  * Useful for testing and one-off runs.
  */
 const JOB_MAP = {
-  "monthly-contributions": createContributions,
-  "payment-reminders":     sendReminders,
-  "monthly-payouts":       processPayouts,
-  "weekly-reconcile":      reconcileGroups,
+  "monthly-contributions":  createContributions,
+  "payment-reminders":      sendReminders,
+  "monthly-payouts":        processPayouts,
+  "weekly-reconcile":       reconcileGroups,
+  "recompute-risk-scores":  require("../schedulers/jobs/recomputeRiskScores"),
 };
 
 router.post("/run/:jobName", async (req, res, next) => {

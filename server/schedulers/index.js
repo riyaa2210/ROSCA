@@ -6,6 +6,7 @@ const createContributions  = require("./jobs/createContributions");
 const sendReminders        = require("./jobs/sendReminders");
 const processPayouts       = require("./jobs/processPayouts");
 const reconcileGroups      = require("./jobs/reconcileGroups");
+const recomputeRiskScores  = require("./jobs/recomputeRiskScores");
 
 /**
  * Cron Schedule Reference:
@@ -97,6 +98,19 @@ function initSchedulers() {
         "weekly-reconcile",
         reconcileGroups,
         { maxRetries: 1, retryDelayMs: 5_000 }
+      );
+    },
+    { timezone }
+  );
+
+  // ── Job 5: Weekly risk score recompute ────────────────────────────────────
+  cron.schedule(
+    process.env.CRON_RISK_SCORES || "0 3 * * 1", // Monday 03:00
+    async () => {
+      await CronJobRunner.run(
+        "recompute-risk-scores",
+        recomputeRiskScores,
+        { maxRetries: 1, retryDelayMs: 10_000 }
       );
     },
     { timezone }
