@@ -98,13 +98,18 @@ async function aggregatePaymentBehaviour(userId) {
     // ── Stage 3: Compute due date and days late for each transaction ───────────
     {
       $addFields: {
-        // Due date = group start date + (month - 1) months
+        // Due date = group start date + (month - 1) months in milliseconds
+        // Using $add with ms calculation (compatible with all MongoDB versions)
         dueDate: {
-          $dateAdd: {
-            startDate: "$groupData.startDate",
-            unit:      "month",
-            amount:    { $subtract: ["$month", 1] },
-          },
+          $add: [
+            "$groupData.startDate",
+            {
+              $multiply: [
+                { $subtract: ["$month", 1] },
+                30 * 24 * 60 * 60 * 1000, // approximate: 30 days per month in ms
+              ],
+            },
+          ],
         },
       },
     },
@@ -217,13 +222,44 @@ async function aggregatePaymentBehaviour(userId) {
       $addFields: {
         recentPayments: {
           $slice: [
+            // Sort by createdAt descending using $reduce (compatible with MongoDB 4.4+)
             {
-              $sortArray: {
-                input:  "$recentPayments",
-                sortBy: { createdAt: -1 },
+              $reduce: {
+                input: {
+                  $map: {
+                    input: { $range: [0, { $size: "$recentPayments" }] },
+                    as: "i",
+                    in: { $arrayElemAt: ["$recentPayments", "$$i"] },
+                  },
+                },
+                initialValue: [],
+                in: {
+                  $let: {
+                    vars: { item: "$$this", acc: "$$value" },
+                    in: {
+                      $concatArrays: [
+                        {
+                          $filter: {
+                            input: "$$acc",
+                            as: "a",
+                            cond: { $gte: ["$$a.createdAt", "$$item.createdAt"] },
+                          },
+                        },
+                        ["$$item"],
+                        {
+                          $filter: {
+                            input: "$$acc",
+                            as: "a",
+                            cond: { $lt: ["$$a.createdAt", "$$item.createdAt"] },
+                          },
+                        },
+                      ],
+                    },
+                  },
+                },
               },
             },
-            24, // keep last 24 months
+            24,
           ],
         },
       },
