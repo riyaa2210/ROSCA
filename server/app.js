@@ -12,7 +12,8 @@ const publicPath = path.join(__dirname, "public");
 // ── Security ──────────────────────────────────────────────────────────────────
 app.use(helmet({ contentSecurityPolicy: false }));
 
-// CORS — allow same-origin requests AND the separate frontend URL if set
+// CORS — build allowed origins from CLIENT_URL env var
+// CLIENT_URL can be comma-separated: "https://a.onrender.com,https://b.onrender.com"
 const rawOrigins  = process.env.CLIENT_URL || "";
 const allowedList = [
   "http://localhost:3000",
@@ -22,17 +23,22 @@ const allowedList = [
 
 app.use(cors({
   origin: (origin, cb) => {
-    // No origin = same-origin / Postman / health checks
+    // Allow requests with no origin (Postman, health checks, same-origin)
     if (!origin) return cb(null, true);
-    if (allowedList.includes(origin)) return cb(null, true);
-    // In production with no CLIENT_URL set, allow everything (same-service deploy)
-    if (!process.env.CLIENT_URL) return cb(null, true);
+    // Always allow in development
+    if (process.env.NODE_ENV !== "production") return cb(null, true);
+    // Allow if origin is in the list
+    if (allowedList.some((allowed) => origin.startsWith(allowed))) {
+      return cb(null, true);
+    }
+    // Allow all *.onrender.com origins (covers preview deploys)
+    if (origin.endsWith(".onrender.com")) return cb(null, true);
     console.warn("[CORS] Blocked:", origin);
     cb(new Error("CORS: not allowed"));
   },
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
 }));
 app.options("*", cors());
 
