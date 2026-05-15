@@ -18,10 +18,10 @@
 
 ---
 
- ## 🎥 Live Demo
+ ## 🎥 Try Out
 
 <p align="center">
-  <a href="https://rosca-w768.onrender.com" target="_blank">
+  <a href="https://rosca-5bwj.onrender.com" target="_blank">
     👉 Click here to explore the live application
   </a>
 </p>
